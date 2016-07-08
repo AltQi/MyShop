@@ -1,0 +1,51 @@
+@CHARSET "UTF-8";
+.products{
+			overflow:auto;
+			height:100%;
+			background:#fafafa;
+		}
+		.products ul{
+			list-style:none;
+			margin:0;
+			padding:0px;
+		}
+		.products li{
+		padding:5px;
+			display:inline;
+			float:left;
+			margin:10px;
+			/* 设置每个图片的li的宽度 */
+			width:130px; 
+			height:300px; 
+		}
+		.item{
+			display:block;
+			text-decoration:none;
+		}
+		.item img{
+			/* fit:true; */
+			border:1px solid #333;
+		}
+		.item p{
+			margin:0;
+			font-weight:bold;
+			 text-align:center; 
+			color:#c3c3c3;
+/* 			word-wrap:break-word;
+			word-break:normal; */
+		}
+		.cart{
+			float:right;
+			overflow:auto;
+			position:relative;
+			width:30%;
+			height:100%;
+			background:#ccc;
+			padding:0px 10px;
+		}
+		.ctitle{
+			text-align:center;
+			color:#555;
+			font-size:18px;
+			padding:10px;
+		}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.RoleMapper" >
+  <resultMap id="BaseResultMap" type="me.qxd.domain.Role" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="TEXT" property="text" jdbcType="VARCHAR" />
+     </resultMap>
+     
+     
+<!--      <resultMap id="duoResultMap" type="me.qxd.domain.Role">
+		<id property="id" column="ID" />
+		<result property="text" column="TEXT" />
+ 		<collection property="roleresources"  ofType="me.qxd.domain.RoleResource">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="RESOURCE_ID" property="resourceId" jdbcType="VARCHAR" />
+		<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+		</collection> 
+	</resultMap> -->
+     
+  <sql id="Base_Column_List" >
+    ID, TEXT
+  </sql>
+
+	<select id="getPageUser" resultMap="BaseResultMap" parameterType="me.qxd.domain.Role" >
+SELECT role.ID ,role.TEXT ,GROUP_CONCAT(role_resource.RESOURCE_ID) AS resourceIds,GROUP_CONCAT(resource.TEXT)AS resourceNames
+FROM role,role_resource,resource
+where role.ID=role_resource.ROLE_ID AND role_resource.RESOURCE_ID=resource.ID
+GROUP BY role.ID
+<!-- select role.ID as r_id,role.TEXT,role_resource.ID,role_resource.ROLE_ID,role_resource.RESOURCE_ID
+		from role INNER JOIN role_resource
+		where role.ID=role_resource.ROLE_ID  -->
+		<!--  and
+		resource.id=role_resource.resource_id -->
+		<!-- limit #{page},#{rows}  -->
+	</select>
+
+    <select id="getTotalNumber"  parameterType="me.qxd.domain.Role" 
+    resultType="Long">
+		select count(*) from role
+	
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from role
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="me.qxd.domain.Role" >
+    delete from role
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="me.qxd.domain.Role" >
+    insert into role (ID, TEXT)
+    values (#{id,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR})
+  </insert>
+  <insert id="addone" parameterType="me.qxd.domain.Role" >
+    insert into role (ID, TEXT)
+    values (#{id,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="me.qxd.domain.Role" >
+    insert into role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="text != null" >
+        TEXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="text != null" >
+        #{text,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.Role" >
+    update role
+    <set >
+      <if test="text != null" >
+        TEXT = #{text,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.qxd.domain.Role" >
+    update role
+    set TEXT = #{text,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

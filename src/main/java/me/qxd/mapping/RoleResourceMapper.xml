@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.RoleResourceMapper">
+	<resultMap id="BaseResultMap" type="me.qxd.domain.RoleResource">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="RESOURCE_ID" property="resourceId" jdbcType="VARCHAR" />
+		<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		ID, RESOURCE_ID, ROLE_ID
+	</sql>
+
+	<select id="find" resultMap="BaseResultMap"
+		parameterType="me.qxd.domain.RoleResource" >
+		select 
+<include refid="Base_Column_List" />
+		from role_resource
+		where RESOURCE_ID = #{resourceId,jdbcType=VARCHAR} and ROLE_ID = #{roleId,jdbcType=VARCHAR}
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from role_resource
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from role_resource
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+		<delete id="deleteByrole" parameterType="me.qxd.domain.RoleResource">
+		delete from role_resource
+		where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="me.qxd.domain.RoleResource">
+		insert into role_resource (ID, RESOURCE_ID, ROLE_ID
+		)
+		values (#{id,jdbcType=VARCHAR}, #{resourceId,jdbcType=VARCHAR},
+		#{roleId,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="me.qxd.domain.RoleResource">
+		insert into role_resource
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="resourceId != null">
+				RESOURCE_ID,
+			</if>
+			<if test="roleId != null">
+				ROLE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="resourceId != null">
+				#{resourceId,jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null">
+				#{roleId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.RoleResource">
+		update role_resource
+		<set>
+			<if test="resourceId != null">
+				RESOURCE_ID = #{resourceId,jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null">
+				ROLE_ID = #{roleId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="me.qxd.domain.RoleResource">
+		update role_resource
+		set RESOURCE_ID = #{resourceId,jdbcType=VARCHAR},
+		ROLE_ID = #{roleId,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

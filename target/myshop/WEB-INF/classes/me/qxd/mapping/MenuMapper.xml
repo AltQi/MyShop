@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.MenuMapper" >
+  <resultMap id="BaseResultMap" type="me.qxd.domain.Menu" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ICONCLS" property="iconcls" jdbcType="VARCHAR" />
+    <result column="SEQ" property="seq" jdbcType="DECIMAL" />
+    <result column="TEXT" property="text" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="PID" property="pid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ICONCLS, SEQ, TEXT, URL, PID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from menu
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+    <select id="getAllMenu" resultMap="BaseResultMap" >
+    select a.ID, a.ICONCLS, a.SEQ, a.TEXT, a.URL, a.PID,b.TEXT as pname
+    from menu a LEFT JOIN menu b
+    on  a.PID=b.ID
+    order by SEQ
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from menu
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="remove" parameterType="java.lang.String" >
+    delete from menu
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+    <update id="editMenu" parameterType="me.qxd.domain.Menu" >
+update menu set ICONCLS=#{iconcls},SEQ=#{seq},TEXT=#{text},URL=#{url},PID=#{pid} where ID=#{id};
+  </update>
+  <insert id="insert" parameterType="me.qxd.domain.Menu" >
+    insert into menu (ID, ICONCLS, SEQ, 
+      TEXT, URL, PID)
+    values (#{id,jdbcType=VARCHAR}, #{iconcls,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, 
+      #{text,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR})
+  </insert>
+    <insert id="addMenu" parameterType="me.qxd.domain.Menu" >
+    insert into menu (ID, ICONCLS, SEQ, 
+      TEXT, URL, PID)
+    values (#{id,jdbcType=VARCHAR}, #{iconcls,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, 
+      #{text,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="me.qxd.domain.Menu" >
+    insert into menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="iconcls != null" >
+        ICONCLS,
+      </if>
+      <if test="seq != null" >
+        SEQ,
+      </if>
+      <if test="text != null" >
+        TEXT,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+      <if test="pid != null" >
+        PID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="iconcls != null" >
+        #{iconcls,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        #{seq,jdbcType=DECIMAL},
+      </if>
+      <if test="text != null" >
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.Menu" >
+    update menu
+    <set >
+      <if test="iconcls != null" >
+        ICONCLS = #{iconcls,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        SEQ = #{seq,jdbcType=DECIMAL},
+      </if>
+      <if test="text != null" >
+        TEXT = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        PID = #{pid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.qxd.domain.Menu" >
+    update menu
+    set ICONCLS = #{iconcls,jdbcType=VARCHAR},
+      SEQ = #{seq,jdbcType=DECIMAL},
+      TEXT = #{text,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      PID = #{pid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

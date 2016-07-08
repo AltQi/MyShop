@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="me.qxd.domain.User" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="DATE" />
+    <result column="province" property="province" jdbcType="INTEGER" />
+    <result column="city" property="city" jdbcType="INTEGER" />
+    <result column="qq" property="qq" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="createdate" property="createdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, username, email, password, phone, name, gender, birthday, province, city, qq, 
+    status, createdate
+  </sql>
+<select id="findname" parameterType="me.qxd.domain.User" resultMap="BaseResultMap"
+		resultType="me.qxd.domain.User">
+		select
+		<include refid="Base_Column_List" />
+		from user where username=#{username}
+</select>
+<select id="getPeopleCountPro"  resultType="me.qxd.domain.Echarts">
+select province.pro_name as name , sum(ifnull(`user`.province,0)) as value
+from province LEFT  JOIN`user` ON province.pro_id=`user`.province
+GROUP BY province.pro_id
+</select>
+ <select id="getPeopleAgeCount"  resultType="me.qxd.domain.Echarts">
+select  a.name as name,count(a.name) as value from( 
+select
+  case   
+  when age>=11 and age &lt;=20 then '10-20岁'  
+  when age>=21 and age &lt;=30 then '20-30岁'  
+  when age>=31 and age &lt;=40 then '30-40岁' 
+	when age>=41 and age &lt;=50 then '40-50岁'
+	when age>=51 and age &lt;=60 then '50-60岁'
+	when age>=61 then '60岁以上'  
+ end   
+ as name from(
+SELECT `user`.`name`, `user`.birthday, CURDATE(),(YEAR(CURDATE())-YEAR(`user`.birthday)) as age
+from user)b where b.birthday is not NULL
+)a
+GROUP BY a.name
+</select>  
+  <select id="find" parameterType="me.qxd.domain.User" resultMap="BaseResultMap"
+		resultType="me.qxd.domain.User">
+		select
+		<include refid="Base_Column_List" />
+		from user where username=#{username} and
+		password=#{password}
+</select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.qxd.domain.User" >
+    insert into user (id, username, email, 
+      password, phone, name, 
+      gender, birthday, province, 
+      city, qq, status, createdate
+      )
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{province,jdbcType=INTEGER}, 
+      #{city,jdbcType=INTEGER}, #{qq,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="me.qxd.domain.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="qq != null" >
+        qq,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createdate != null" >
+        createdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.User" >
+    update user
+    <set >
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.qxd.domain.User" >
+    update user
+    set username = #{username,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=DATE},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      qq = #{qq,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      createdate = #{createdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  		<select id="get" resultMap="BaseResultMap"
+		parameterType="me.qxd.domain.User">
+		select
+				user.username,user.id,user.email,user.password,user.gender,user.province,user.city,
+		user.birthday,
+		user.phone,user.qq,
+		user.status,user.createdate,user_role.ROLE_ID as roleId,role.text as roleName,GROUP_CONCAT(role_resource.RESOURCE_ID) as resourceIds,
+GROUP_CONCAT(resource.TEXT) as resourceNames,GROUP_CONCAT(resource.url) as resourceUrls
+		from user,user_role,role,role_resource,resource
+		 where user_role.user_id=#{id,jdbcType=INTEGER} and user_role.role_id =role.id and role.id=role_resource.ROLE_ID
+and role_resource.RESOURCE_ID=resource.ID
+	</select>
+
+	<select id="getTotalNumber" parameterType="me.qxd.domain.User"
+		resultType="Long">
+
+		select count(*) from user
+		<where>
+			<if test="username != null">
+				username LIKE CONCAT('%', CONCAT(#{username}, '%'))
+			</if>
+			<if test="createdatetimeStart != null">
+				and createdate &gt;  #{createdatetimeStart}
+			</if>
+			<if test="createdatetimeStart != null and createdatetimeEnd != null">
+				and createdate &lt;  #{createdatetimeEnd}
+			</if>
+		</where>
+	</select>
+	<select id="getPageUser" parameterType="me.qxd.domain.User"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		<where>
+			<if test="username != null">
+				username LIKE CONCAT('%', CONCAT(#{username}, '%'))
+			</if>
+			<if test="createdatetimeStart != null">
+				and createdate &gt;  #{createdatetimeStart}
+			</if>
+			<if test="createdatetimeStart != null and createdatetimeEnd != null">
+				and createdate &lt;  #{createdatetimeEnd}
+			</if>
+		</where>
+		order by ${sort} ${order}
+		limit #{page},#{rows}
+	</select>
+	<select id="getAllUser" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		user
+	</select>
+</mapper>

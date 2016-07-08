@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.OrderdetailMapper" >
+  <resultMap id="BaseResultMap" type="me.qxd.domain.Orderdetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="productId" property="productid" jdbcType="INTEGER" />
+    <result column="productCount" property="productcount" jdbcType="INTEGER" />
+    <result column="orderId" property="orderid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, productId, productCount, orderId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from orderdetail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from orderdetail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.qxd.domain.Orderdetail" >
+    insert into orderdetail (productId, productCount, 
+      orderId)
+    values ( #{productid,jdbcType=INTEGER}, #{productcount,jdbcType=INTEGER}, 
+      #{orderid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="me.qxd.domain.Orderdetail" >
+    insert into orderdetail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="productid != null" >
+        productId,
+      </if>
+      <if test="productcount != null" >
+        productCount,
+      </if>
+      <if test="orderid != null" >
+        orderId,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="productcount != null" >
+        #{productcount,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.Orderdetail" >
+    update orderdetail
+    <set >
+      <if test="productid != null" >
+        productId = #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="productcount != null" >
+        productCount = #{productcount,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        orderId = #{orderid,jdbcType=INTEGER},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.qxd.domain.Orderdetail" >
+    update orderdetail
+    set productId = #{productid,jdbcType=INTEGER},
+      productCount = #{productcount,jdbcType=INTEGER},
+      orderId = #{orderid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

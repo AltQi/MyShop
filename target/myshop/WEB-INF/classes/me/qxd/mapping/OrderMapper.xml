@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.OrderMapper" >
+  <resultMap id="BaseResultMap" type="me.qxd.domain.Order" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="orderPrice" property="orderPrice" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userId, createTime,orderPrice
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="getOneOrderPrice" resultType="me.qxd.domain.Echarts" parameterType="java.lang.String" >
+    select 
+    createTime,orderPrice
+    from orders
+    where userId = #{userId,jdbcType=VARCHAR}
+    ORDER BY createTime
+  </select>
+    <select id="getOneBuyType" resultType="me.qxd.domain.Echarts" parameterType="java.lang.String" >
+select category.cname as name,SUM(orders.orderPrice) as value
+from orders,orderdetail,product,category
+where orders.userId=#{userId,jdbcType=VARCHAR} AND orders.id=orderdetail.orderId AND orderdetail.productId=product.id
+and product.categoryId=category.id
+GROUP BY category.id
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from orders
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.qxd.domain.Order" useGeneratedKeys="true" keyProperty="id">
+    insert into orders (userId, createTime,orderPrice)
+    values (#{userid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{orderPrice,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="me.qxd.domain.Order" >
+    insert into orders
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="orderPrice != null" >
+        orderPrice,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="orderPrice != null" >
+        #{orderPrice,jdbcType=DOUBLE}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.Order" >
+    update orders
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.qxd.domain.Order" >
+    update orders
+    set userId = #{userid,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

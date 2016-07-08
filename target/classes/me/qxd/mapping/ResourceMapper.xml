@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.ResourceMapper" >
+  <resultMap id="BaseResultMap" type="me.qxd.domain.Resource" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SEQ" property="seq" jdbcType="DECIMAL" />
+    <result column="TEXT" property="text" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="PID" property="pid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SEQ, TEXT, URL, PID
+  </sql>
+      <delete id="remove" parameterType="java.lang.String" >
+    delete from resource
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+        <update id="edit" parameterType="me.qxd.domain.Resource" >
+update resource set SEQ=#{seq},TEXT=#{text},URL=#{url},PID=#{pid} where ID=#{id};
+  </update>
+  	<select id="allTreeNode" resultMap="BaseResultMap" >
+    select a.ID, a.SEQ, a.TEXT, a.URL, a.PID,b.TEXT as pname
+    from resource a LEFT JOIN resource b
+    on  a.PID=b.ID
+  order by  SEQ
+<!-- select role.ID as r_id,role.TEXT,role_resource.ID,role_resource.ROLE_ID,role_resource.RESOURCE_ID
+		from role INNER JOIN role_resource
+		where role.ID=role_resource.ROLE_ID  -->
+		<!--  and
+		resource.id=role_resource.resource_id -->
+		<!-- limit #{page},#{rows}  -->
+
+	</select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from resource
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from resource
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="me.qxd.domain.Resource" >
+    insert into resource (ID, SEQ, TEXT, 
+      URL, PID)
+    values (#{id,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, #{text,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR})
+  </insert>
+
+    <insert id="add" parameterType="me.qxd.domain.Resource" >
+    insert into resource (ID, SEQ, TEXT, 
+      URL, PID)
+    values (#{id,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, #{text,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="me.qxd.domain.Resource" >
+    insert into resource
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="seq != null" >
+        SEQ,
+      </if>
+      <if test="text != null" >
+        TEXT,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+      <if test="pid != null" >
+        PID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        #{seq,jdbcType=DECIMAL},
+      </if>
+      <if test="text != null" >
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.Resource" >
+    update resource
+    <set >
+      <if test="seq != null" >
+        SEQ = #{seq,jdbcType=DECIMAL},
+      </if>
+      <if test="text != null" >
+        TEXT = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        PID = #{pid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.qxd.domain.Resource" >
+    update resource
+    set SEQ = #{seq,jdbcType=DECIMAL},
+      TEXT = #{text,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      PID = #{pid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

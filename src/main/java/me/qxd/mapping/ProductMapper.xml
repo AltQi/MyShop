@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.qxd.dao.ProductMapper" >
+  <resultMap id="BaseResultMap" type="me.qxd.domain.Product" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="currentPrice" property="currentPrice" jdbcType="DOUBLE" />
+    <result column="standardPrice" property="standardPrice" jdbcType="DOUBLE" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="picturePath" property="picturePath" jdbcType="VARCHAR" />
+    <result column="categoryId" property="categoryId" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="createDatetime" property="createDatetime" jdbcType="TIMESTAMP" />
+    <result column="shortDescription" property="shortDescription" jdbcType="LONGVARCHAR" />
+    <result column="details" property="details" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  
+  
+  
+  <sql id="Base_Column_List" >
+    id, currentPrice, standardPrice, name, picturePath, categoryId, url, createDatetime,shortDescription,details
+  </sql>
+    <select id="selectUserProductCart" parameterType="java.lang.String"  resultType="me.qxd.domain.Product">
+    select 
+	product.id,product.currentPrice, product.name,product.picturePath,product.shortDescription,cart.productCount as quantity
+	from cart,product
+    where cart.userId = #{userId,jdbcType=VARCHAR} and cart.productId=product.id
+  </select>
+  <select id="getSellMostProduct"  resultType="me.qxd.domain.Product">
+SELECT product.id,product.currentPrice,product.`name`,product.shortDescription,product.details,product.picturePath,product.categoryId
+FROM (
+SELECT productId,sum(productCount) as quantity
+FROM orderdetail
+GROUP BY productId
+)a,product
+where a.productId=product.id
+ORDER BY a.quantity DESC limit 0,5
+  </select>
+      <select id="selectUserGuessProductOrder" parameterType="java.lang.String"  resultType="me.qxd.domain.Product">
+SELECT a.categoryId,AVG(a.currentPrice) as currentPrice 
+FROM(
+select product.categoryId,product.currentPrice
+from orders,orderdetail,product
+where orders.id=orderdetail.orderId and product.id=orderdetail.productId and orders.userId=#{userId,jdbcType=VARCHAR}
+ORDER BY orders.createTime DESC LIMIT 0,5
+)a
+GROUP BY a.categoryId
+  </select>
+    <select id="selectUserGuessProductCart" parameterType="java.lang.String"  resultType="me.qxd.domain.Product">
+    SELECT product.categoryId,AVG(currentPrice) as currentPrice
+FROM cart,product
+where cart.productId=product.id AND cart.userId= #{userId,jdbcType=VARCHAR}
+GROUP BY product.categoryId
+  </select>
+ <select id="getUserGuessProductCartThen" parameterType="me.qxd.domain.Product"  resultType="me.qxd.domain.Product">
+SELECT *
+from product
+where product.categoryId= #{categoryId,jdbcType=VARCHAR} and currentPrice>=#{currentPrice,jdbcType=DOUBLE}-100 and currentPrice &lt;=#{currentPrice,jdbcType=DOUBLE}+100
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from product
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="getAllProductByCategoryId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from product
+    where categoryId = #{categoryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.qxd.domain.Product" >
+    insert into product (id, currentPrice, standardPrice, 
+      name, picturePath, categoryId, 
+      url, createDatetime, shortDescription, 
+      details)
+    values (#{id,jdbcType=INTEGER}, #{currentPrice,jdbcType=DOUBLE}, #{standardPrice,jdbcType=DOUBLE}, 
+      #{name,jdbcType=VARCHAR}, #{picturePath,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{createDatetime,jdbcType=TIMESTAMP}, #{shortDescription,jdbcType=LONGVARCHAR}, 
+      #{details,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="me.qxd.domain.Product" >
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="currentPrice != null" >
+        currentPrice,
+      </if>
+      <if test="standardPrice != null" >
+        standardPrice,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="picturePath != null" >
+        picturePath,
+      </if>
+      <if test="categoryId != null" >
+        categoryId,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="createDatetime != null" >
+        createDatetime,
+      </if>
+      <if test="shortDescription != null" >
+        shortDescription,
+      </if>
+      <if test="details != null" >
+        details,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="currentPrice != null" >
+        #{currentPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="standardPrice != null" >
+        #{standardPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="picturePath != null" >
+        #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createDatetime != null" >
+        #{createDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shortDescription != null" >
+        #{shortDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="details != null" >
+        #{details,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.qxd.domain.Product" >
+    update product
+    <set >
+      <if test="currentPrice != null" >
+        currentPrice = #{currentPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="standardPrice != null" >
+        standardPrice = #{standardPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="picturePath != null" >
+        picturePath = #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        categoryId = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createDatetime != null" >
+        createDatetime = #{createDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shortDescription != null" >
+        shortDescription = #{shortDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="details != null" >
+        details = #{details,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="me.qxd.domain.Product" >
+    update product
+    set currentPrice = #{currentPrice,jdbcType=DOUBLE},
+      standardPrice = #{standardPrice,jdbcType=DOUBLE},
+      name = #{name,jdbcType=VARCHAR},
+      picturePath = #{picturePath,jdbcType=VARCHAR},
+      categoryId = #{categoryId,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      createDatetime = #{createDatetime,jdbcType=TIMESTAMP},
+      shortDescription = #{shortDescription,jdbcType=LONGVARCHAR},
+      details = #{details,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.qxd.domain.Product" >
+    update product
+    set currentPrice = #{currentPrice,jdbcType=DOUBLE},
+      standardPrice = #{standardPrice,jdbcType=DOUBLE},
+      name = #{name,jdbcType=VARCHAR},
+      picturePath = #{picturePath,jdbcType=VARCHAR},
+      categoryId = #{categoryId,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      createDatetime = #{createDatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
